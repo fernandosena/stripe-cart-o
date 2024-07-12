@@ -1,5 +1,4 @@
 <?php
-
 require_once 'shared.php';
 header('Content-Type: application/json');
 
@@ -8,7 +7,6 @@ $body = json_decode($input);
 $event = null;
 
 try {
-  // Make sure the event is coming from Stripe by checking the signature header
   $event = \Stripe\Webhook::constructEvent(
     $input,
     $_SERVER['HTTP_STRIPE_SIGNATURE'],

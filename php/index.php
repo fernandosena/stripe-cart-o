@@ -1,9 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-
     <title>Pagamento</title>
     <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css'>
     <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css'>
@@ -78,7 +77,7 @@
                 </div>
                 <div class="d-flex justify-content-between">
                   <div class="col px-0">
-                    <a href="/card.html">
+                    <a href="card.php">
                       <button class="btn btn-outline-primary btn-block">
                         Comprar 
                         <i class="fa fa-shopping-basket" aria-hidden="true"></i>

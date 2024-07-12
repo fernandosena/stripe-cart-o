@@ -3,20 +3,17 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-
     <title>Cartão</title>
-
     <link rel="stylesheet" href="/css/base.css" />
     <script src="https://js.stripe.com/v3/"></script>
 
-    <script src="/utils.js" defer></script>
-    <script src="/card.js" defer></script>
+    <script src="js/utils.js" defer></script>
+    <script src="js/card.js" defer></script>
   </head>
   <body>
     <main>
-      <a href="/">Home</a>
+      <a href="index.php">Home</a>
       <h1>Cartão</h1>
-
       <p>
         <h4><a href="https://stripe.com/docs/testing#cards" target="_blank">Cartões de teste</a>:</h4>
         <div>
@@ -43,13 +40,10 @@
         <div id="card-element">
           <!-- Elements will create input elements here -->
         </div>
-
-        <!-- We'll put the error messages in this element -->
         <div id="card-errors" role="alert"></div>
 
         <button id="submit">Pagar</button>
       </form>
-
       <div id="messages" role="alert" style="display: none;"></div>
     </main>
   </body>
