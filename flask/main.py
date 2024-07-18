@@ -140,6 +140,29 @@ def create_subscription():
     price = price_create(product=product, name="Valor Teste") #criar o valor e anex ao produto
     data = json.loads(request.data)
 
+    # try:
+    #     subscription = stripe.Subscription.create(
+    #         customer=id_custorm,
+    #         items=[{
+    #             'price': price,
+    #         }],
+    #         payment_behavior='default_incomplete',
+    #         payment_settings={'save_default_payment_method': 'on_subscription'},
+    #         expand=['latest_invoice.payment_intent'],
+    #     )
+    #     print(subscription)
+    #     response = jsonify(
+    #         subscriptionId=subscription.id, 
+    #         clientSecret=subscription.latest_invoice.payment_intent.client_secret)
+    #     return response
+    # except stripe.error.StripeError as e:
+    #     response = jsonify({'error': {'message': str(e)}}), 400
+    #     return response
+    # except Exception as e:
+    #     response = jsonify({'error': {'message': str(e)}}), 400
+    #     return response
+    
+
     try:
         subscription = stripe.Subscription.create(
             customer=id_custorm,
@@ -148,16 +171,15 @@ def create_subscription():
             }],
             payment_behavior='default_incomplete',
             payment_settings={'save_default_payment_method': 'on_subscription'},
-            expand=['latest_invoice.payment_intent'],
+            expand=['latest_invoice.payment_intent', 'pending_setup_intent'],
         )
-        response = jsonify(subscriptionId=subscription.id, clientSecret=subscription.latest_invoice.payment_intent.client_secret)
-        return response
-    except stripe.error.StripeError as e:
-        response = jsonify({'error': {'message': str(e)}}), 400
-        return response
+        if subscription.pending_setup_intent is not None:
+            return jsonify(type='setup', clientSecret=subscription.pending_setup_intent.client_secret)
+        else:
+            return jsonify(type='payment', clientSecret=subscription.latest_invoice.payment_intent.client_secret)
+    
     except Exception as e:
-        response = jsonify({'error': {'message': str(e)}}), 400
-        return response
+        return jsonify(error={'message': e.user_message}), 400
 
 # Permite acessar o Flask por outra url e porta
 @app.after_request

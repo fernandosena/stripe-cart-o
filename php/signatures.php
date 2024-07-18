@@ -10,7 +10,7 @@
     <script src="https://js.stripe.com/v3/"></script>
 
     <script src="js/utils.js" defer></script>
-    <script src="js/signature.js" defer></script>
+    <script src="js/subscribe.js" defer></script>
   </head>
   <body>
     <main>
@@ -29,8 +29,8 @@
       <p>
         Use qualquer vencimento futuro, qualquer CVC de 3 dígitos e qualquer código postal.
       </p>
-      <form novalidate="" id="payment-form">
-        <div class="mb-3">
+      <form id="payment-form">
+      <div class="mb-3">
           <label for="name">Nome completo</label>
           <input type="text" class="form-control" id="name" placeholder="Nome completo" value="Fernando Sena" required="">
         </div>
@@ -79,15 +79,13 @@
           </div>
         </div>
         <hr class="mb-4">
-        <label for="payment-element">
-          Cartão
-        </label>
         <div id="payment-element">
-          <!-- Elements will create input elements here -->
+          <!-- Elements will create form elements here -->
         </div>
-        <div id="error-message" role="alert"></div>
-
-        <button id="submit">Assinar</button>
+        <button id="submit">Submit</button>
+        <div id="error-message">
+          <!-- Display error message to your customers here -->
+        </div>
       </form>
       <div id="messages" role="alert" style="display: none;"></div>
     </main>
