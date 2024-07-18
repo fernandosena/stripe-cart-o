@@ -1,5 +1,6 @@
+const url = 'http://localhost:4242'
 document.addEventListener('DOMContentLoaded', async () => {
-  const {publishableKey} = await fetch('/config').then((r) => r.json());
+  const {publishableKey} = await fetch(url+'/config').then((r) => r.json());
   if (!publishableKey) {
     addMessage(
       'Nenhuma chave publicável retornada do servidor. Por favor, verifique `.env` e tente novamente'
@@ -19,16 +20,30 @@ document.addEventListener('DOMContentLoaded', async () => {
     e.preventDefault();
 
     if(submitted) { return; }
+
     submitted = true;
     form.querySelector('button').disabled = true;
 
+    const data = { 
+      name: document.querySelector('#name').value,
+      email: document.querySelector('#email').value,
+      phone: document.querySelector('#phone').value,
+      address: document.querySelector('#address').value,
+      address2: document.querySelector('#address2').value,
+      country: document.querySelector('#country').value,
+      city: document.querySelector('#city').value,
+      state: document.querySelector('#state').value,
+      zip: document.querySelector('#zip').value,
+    };
+    
     const {error: backendError, clientSecret} = await fetch(
-      '/create-payment-intent',
+      url+'/create-payment-intent',
       {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-        }
+        },
+        body: JSON.stringify(data),
       }
     ).then((r) => r.json());
 

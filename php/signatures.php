@@ -3,19 +3,19 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Cartão</title>
+    <title>Assinatura</title>
     <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css'>
     <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css'>
     <link rel="stylesheet" href="/css/base.css" />
     <script src="https://js.stripe.com/v3/"></script>
 
     <script src="js/utils.js" defer></script>
-    <script src="js/card.js" defer></script>
+    <script src="js/signature.js" defer></script>
   </head>
   <body>
     <main>
       <a href="index.php">Home</a>
-      <h1>Cartão</h1>
+      <h1>Assinatura</h1>
       <p>
         <h4><a href="https://stripe.com/docs/testing#cards" target="_blank">Cartões de teste</a>:</h4>
         <div>
@@ -79,15 +79,15 @@
           </div>
         </div>
         <hr class="mb-4">
-        <label for="card-element">
+        <label for="payment-element">
           Cartão
         </label>
-        <div id="card-element">
+        <div id="payment-element">
           <!-- Elements will create input elements here -->
         </div>
-        <div id="card-errors" role="alert"></div>
+        <div id="error-message" role="alert"></div>
 
-        <button id="submit">Pagar</button>
+        <button id="submit">Assinar</button>
       </form>
       <div id="messages" role="alert" style="display: none;"></div>
     </main>
