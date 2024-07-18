@@ -2,7 +2,7 @@
 
 # instale o strip cli: https://docs.stripe.com/stripe-cli?locale=pt
 ### webhook local: https://docs.stripe.com/webhooks
-stripe listen --forward-to localhost:8080/webhook.php
+stripe listen --forward-to 127.0.0.1:8080/webhook.php
 
 ## Copia o codigo whsec_... e condigure o .env
 

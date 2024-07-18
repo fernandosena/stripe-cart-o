@@ -6,7 +6,7 @@
 <?php 
 exit; endif; 
 
-$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/..');
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/');
 $dotenv->load();
 if (!$_ENV['STRIPE_SECRET_KEY']):
 ?>

@@ -15,6 +15,11 @@
         <li><a href="card.php">Cartão</a></li>
         <li><a href="signatures.php">Assinatura</a></li>
       </ul>
+      <hr>
+      <ul>
+        <li><a href="webhook.txt">Histórico Webhook</a></li>
+        <li><a href="clear.php">Limpar Histórico Webhook</a></li>
+      </ul>
     </main>
   </body>
 </html>
