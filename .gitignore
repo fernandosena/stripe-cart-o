@@ -103,6 +103,9 @@ venv/
 ENV/ 
 env.bak/ 
 venv.bak/ 
+vendor/
+composer.lock
+webhook.txt
 
 # mkdocs documentation 
 /site 
