@@ -10,7 +10,7 @@ try {
   $event = \Stripe\Webhook::constructEvent(
     $input,
     $_SERVER['HTTP_STRIPE_SIGNATURE'],
-    $_ENV['STRIPE_WEBHOOK_SECRET']
+    $_ENV['STRIPE_WEBHOOK_SECRET'],
   );
 }
 catch (Exception $e) {

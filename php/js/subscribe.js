@@ -1,4 +1,5 @@
-const url = 'http://localhost:4242'
+const url = 'https://apipagto.starzap.com.br'
+
 document.addEventListener('DOMContentLoaded', async () => {
   const {publishableKey} = await fetch(url+'/config').then((r) => r.json());
   if (!publishableKey) {
@@ -54,6 +55,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Create the subscription
 
     const data = { 
+      title: document.querySelector('#title').value,
+      price: document.querySelector('#price').value,
+      
       name: document.querySelector('#name').value,
       email: document.querySelector('#email').value,
       phone: document.querySelector('#phone').value,
@@ -83,7 +87,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       elements,
       clientSecret,
       confirmParams: {
-        return_url: 'http://127.0.0.1:8080/success.php',
+        return_url: url+'/success.php',
       },
     });
 

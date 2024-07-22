@@ -97,14 +97,18 @@ def create_payment():
     )
     params: dict[str, any]
     
+    #product data
+    title = data["title"]
+    price = int(data["price"])*100
+
     params = {
         'payment_method_types': [
             'card'
         ],
-        'amount': 15000, #valor em centavos
+        'amount': price, #valor em centavos
         'currency': "brl",
         'customer': id_custorm,
-        'description': "Descrição do pagamento",
+        'description': title,
     }
 
     try:
@@ -136,33 +140,13 @@ def create_subscription():
         state=data["state"],
     ) # cria um cliente
 
-    product = product_create(name="Produto exemplo") #criar o o produto
-    price = price_create(product=product, name="Valor Teste") #criar o valor e anex ao produto
-    data = json.loads(request.data)
+    #product data
+    title = data["title"]
+    price = int(data["price"])*100
 
-    # try:
-    #     subscription = stripe.Subscription.create(
-    #         customer=id_custorm,
-    #         items=[{
-    #             'price': price,
-    #         }],
-    #         payment_behavior='default_incomplete',
-    #         payment_settings={'save_default_payment_method': 'on_subscription'},
-    #         expand=['latest_invoice.payment_intent'],
-    #     )
-    #     print(subscription)
-    #     response = jsonify(
-    #         subscriptionId=subscription.id, 
-    #         clientSecret=subscription.latest_invoice.payment_intent.client_secret)
-    #     return response
-    # except stripe.error.StripeError as e:
-    #     response = jsonify({'error': {'message': str(e)}}), 400
-    #     return response
-    # except Exception as e:
-    #     response = jsonify({'error': {'message': str(e)}}), 400
-    #     return response
+    product = product_create(name=title) #criar o o produto
+    price = price_create(product=product, name=title, amount=price) #criar o valor e anex ao produto
     
-
     try:
         subscription = stripe.Subscription.create(
             customer=id_custorm,

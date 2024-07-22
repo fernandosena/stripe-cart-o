@@ -1,3 +1,11 @@
+<?php
+if(empty($_GET["title"]) || empty($_GET["price"])){
+  ?>
+      <h1>Volte a <a href="products.php">página de produto</a> e escolha um produto</h1>
+  <?php
+  die();  
+}
+?>
 <!DOCTYPE html>
 <html>
   <head>
@@ -78,6 +86,8 @@
             <input type="text" class="form-control" id="zip" placeholder="" required="" value="05207130">
           </div>
         </div>
+        <input type="hidden" id="title" name="title" value="<?= ($_GET["title"] ?? null)?>">
+        <input type="hidden" id="price" name="price" value="<?= ($_GET["price"] ?? null)?>">
         <hr class="mb-4">
         <label for="card-element">
           Cartão
