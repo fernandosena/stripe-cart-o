@@ -64,26 +64,25 @@ def product_create(name="Gold Plan"):
     product = stripe.Product.create(
         name=name,
         description="Descrição do produto",
-        
     )
     return product.id
 
 # criar um valor para o produto
 # https://docs.stripe.com/api/prices/create
-def price_create(product, name = "Gold Plan", amount = 1000, interval = "month"):
+def price_create(product, name = "Gold Plan", amount = 1000, interval = {"interval": "month"}):
     price = stripe.Price.create(
         currency="brl",
         unit_amount=amount,
-        recurring={"interval": interval},
+        recurring=interval,
         product = product,
     )
     return price.id
 
-# Realiza a cobrança pelo cartão
-# https://docs.stripe.com/api/payment_intents/create
-@app.route('/create-payment-intent', methods=['POST'])
-def create_payment():
-    data = json.loads(request.data)
+@app.route('/payment-cart', methods=['POST'])
+def create_payment_cart():
+    data = request.get_json()
+    
+    #cria o usuario no stripe
     id_custorm = create_customer(
         name=data["name"],
         email=data["email"],
@@ -95,75 +94,75 @@ def create_payment():
         postal_code=data["zip"],
         state=data["state"],
     )
-    params: dict[str, any]
+
+    #salva o pagamento para futuras compras
+    setup_intent = stripe.SetupIntent.create(
+        payment_method_types=["card"],
+        customer=id_custorm
+    )
     
-    #product data
-    title = data["title"]
-    price = int(data["price"])*100
+    #retorna os dados para gerar o cookie
+    return jsonify({
+        'type': 'setup',
+        'clientSecret': setup_intent.client_secret,
+        'custorm': id_custorm,
+    })
 
-    params = {
-        'payment_method_types': [
-            'card'
-        ],
-        'amount': price, #valor em centavos
-        'currency': "brl",
-        'customer': id_custorm,
-        'description': title,
-    }
+@app.route('/create-payment', methods=['POST'])
+def create_payment():
+    data = json.loads(request.get_json())
 
-    try:
-        intent = stripe.PaymentIntent.create(**params)
-        response = jsonify({'clientSecret': intent.client_secret})
-        return response
-    except stripe.error.StripeError as e:
-        response = jsonify({'error': {'message': str(e)}}), 400
-        return response
-    except Exception as e:
-        response = jsonify({'error': {'message': str(e)}}), 400
-        return response
 
-# Cria uma assinatura recorrente
-# https://docs.stripe.com/api/subscriptions/create
-@app.route('/create-subscription', methods=['POST'])
-def create_subscription():
-    # para se criar uma assinatura precisa-se de um cliente, produto e valor ja cadastrado, 
-    data = json.loads(request.data)
-    id_custorm = create_customer(
-        name=data["name"],
-        email=data["email"],
-        phone=data["phone"],
-        city=data["city"],
-        country=data["country"],
-        line1=data["address"],
-        line2=data["address2"],
-        postal_code=data["zip"],
-        state=data["state"],
-    ) # cria um cliente
+    # recupera o ID dado do cartão
+    cards = stripe.PaymentMethod.list(
+        customer=data["custorm"],
+        type="card",
+    )
 
-    #product data
-    title = data["title"]
-    price = int(data["price"])*100
+    plan_list = []
+    for item in data["products"]:
+        product = product_create(name=item["nome"]) #cria os produtos no stripe
 
-    product = product_create(name=title) #criar o o produto
-    price = price_create(product=product, name=title, amount=price) #criar o valor e anex ao produto
-    
-    try:
-        subscription = stripe.Subscription.create(
-            customer=id_custorm,
-            items=[{
+        #cria um dicionario com os dados dos planos
+        if item["tipo"] == "plan":
+            amount = int(item["preco"])*100
+            price = price_create(product=product, name=item["nome"], amount=amount)
+            plan_list.append({
                 'price': price,
-            }],
-            payment_behavior='default_incomplete',
-            payment_settings={'save_default_payment_method': 'on_subscription'},
-            expand=['latest_invoice.payment_intent', 'pending_setup_intent'],
-        )
-        if subscription.pending_setup_intent is not None:
-            return jsonify(type='setup', clientSecret=subscription.pending_setup_intent.client_secret)
+                'quantity': int(item["quantidade"]),
+            })
         else:
-            return jsonify(type='payment', clientSecret=subscription.latest_invoice.payment_intent.client_secret)
-    
-    except Exception as e:
-        return jsonify(error={'message': e.user_message}), 400
+            #cria os pagamentos para cada produto
+            amount = (int(item["preco"])*100)*int(item["quantidade"])
+            try:
+                payment = stripe.PaymentIntent.create(
+                    amount=amount,
+                    currency='brl',
+                    automatic_payment_methods={"enabled": True},
+                    customer=data["custorm"],
+                    payment_method=cards.data[0].id,
+                    return_url="https://127.0.0.1/aaa",
+                    off_session=True,
+                    confirm=True,
+                    metadata={"id_internal": item["id"]}
+                )
+                print(f"Pagamento produto realizado. ID: {payment.id}")
+            except stripe.error.CardError as e:
+                print("Erro ao pagar produtos")
+
+        # realiza a assinatura
+        for itens in plan_list:
+            try:
+                subscription = stripe.Subscription.create(
+                    customer=data["custorm"],
+                    items=[itens],
+                    default_payment_method=cards.data[0].id
+                )
+                print(f"Assinatura realizada. ID: {subscription.id}")
+            except stripe.error.CardError as e:
+                print("Erro ao pagar assinatura")
+        
+    return jsonify({'stop': True})
 
 # Permite acessar o Flask por outra url e porta
 @app.after_request

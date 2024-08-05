@@ -12,8 +12,7 @@
     <main>
       <h1 class="text-center">Links</h1>
       <ul>
-        <li><a href="products.php">Cartão</a></li>
-        <li><a href="plans.php">Assinatura</a></li>
+        <li><a href="products.php">Produtos</a></li>
       </ul>
       <hr>
       <ul>

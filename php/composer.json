@@ -3,6 +3,14 @@
       "stripe/stripe-php": "^15.0",
       "vlucas/phpdotenv": "^5.3"
     },
+    "autoload": {
+      "psr-4": {
+        "Source\\": "source/"
+      },
+      "files": [
+        "source/Cart.php"
+      ]
+    },
     "scripts": {
       "start": "php -S 0.0.0.0:8080"
     }

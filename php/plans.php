@@ -10,6 +10,7 @@
   </head>
   <body>
     
+
 <div class="container">
     <h1 class="text-center mb-5">Assinaturas</h1>
     <div class="card-deck mb-3 text-center">
@@ -26,8 +27,10 @@
                 <li>Acesso ao centro de ajuda</li>
             </ul>
 
-            <form action="signatures.php">
+            <form action="cart.php">
                 <button type="submit" style="color: #fff" class="btn btn-primary w-100">Contate-nos</button>
+                <input type="hidden" name="id" value="4">
+                <input type="hidden" name="type" value="plan">
                 <input type="hidden" name="title" value="Pro">
                 <input type="hidden" name="price" value="15">
             </form>
@@ -45,8 +48,10 @@
                 <li>Suporte por email e telefone</li>
                 <li>Acesso ao centro de ajuda</li>
             </ul>
-            <form action="signatures.php">
+            <form action="cart.php">
                 <button type="submit" style="color: #fff" class="btn btn-primary w-100">Contate-nos</button>
+                <input type="hidden" name="id" value="5">
+                <input type="hidden" name="type" value="plan">
                 <input type="hidden" name="title" value="Premium">
                 <input type="hidden" name="price" value="29">
             </form>

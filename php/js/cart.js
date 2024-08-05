@@ -1,11 +1,7 @@
-const url = 'https://apipagto.starzap.com.br'
 
 document.addEventListener('DOMContentLoaded', async () => {
   const {publishableKey} = await fetch(url+'/config').then((r) => r.json());
   if (!publishableKey) {
-    addMessage(
-      'Nenhuma chave publicável retornada do servidor. Por favor, verifique `.env` e tente novamente'
-    );
     alert('Defina sua chave de API publicável do Stripe no arquivo .env');
   }
 
@@ -32,6 +28,18 @@ document.addEventListener('DOMContentLoaded', async () => {
     submitBtn.disabled = false;
   }
 
+  function setCookie(name, value, hours) {
+    let expires = "";
+    if (hours) {
+      const date = new Date();
+      date.setTime(date.getTime() + (hours * 60 * 60 * 1000));
+      expires = "; expires=" + date.toUTCString();
+    }
+    document.cookie = name + "=" + (value || "")  + expires + "; path=/"; 
+  
+  }
+
+  
   form.addEventListener('submit', async (event) => {
     // We don't want to let default form submission happen here,
     // which would refresh the page.
@@ -55,8 +63,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Create the subscription
 
     const data = { 
-      title: document.querySelector('#title').value,
-      price: document.querySelector('#price').value,
+      products: dadosCarrinho,
       
       name: document.querySelector('#name').value,
       email: document.querySelector('#email').value,
@@ -69,7 +76,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       zip: document.querySelector('#zip').value,
     };
 
-    const res = await fetch(url+'/create-subscription', 
+    const res = await fetch(url+'/payment-cart', 
       {
         method: 'POST',
         headers: {
@@ -77,26 +84,34 @@ document.addEventListener('DOMContentLoaded', async () => {
         },
         body: JSON.stringify(data),
     });
-    const {type, clientSecret} = await res.json();
+    const {type, clientSecret, custorm} = await res.json();
     const confirmIntent = type === "setup" ? stripe.confirmSetup : stripe.confirmPayment;
+    
+    const cartData = {
+      custorm: custorm,
+      products: dadosCarrinho
+    };  
+    const cartString = JSON.stringify(cartData);
 
-    addMessage(`Código do cliente gerado.`);
+  
+    document.cookie = `cart=${cartString}; path=/`;
+
 
     // Confirm the Intent using the details collected by the Payment Element
     const {error} = await confirmIntent({
       elements,
       clientSecret,
       confirmParams: {
-        return_url: url+'/success.php',
+        return_url: url2+'/success.php',
       },
     });
 
     if (error) {
       // This point is only reached if there's an immediate error when confirming the Intent.
       // Show the error to your customer (for example, "payment details incomplete").
-      addMessage(error);
+      alert(error);
     } else {
-      addMessage(`Assinatura realizado com sucesso`);
+      alert(`Assinatura realizado com sucesso`);
       // Your customer is redirected to your `return_url`. For some payment
       // methods like iDEAL, your customer is redirected to an intermediate
       // site first to authorize the payment, then redirected to the `return_url`.
